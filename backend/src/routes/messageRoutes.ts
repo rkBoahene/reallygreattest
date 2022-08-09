@@ -5,6 +5,6 @@ const router = Router()
 
 router.post("/sendmessage/",addMessage)
 
-router.get("/getmessags/",getAllMessage)
+router.get("/getmessages/",getAllMessage)
 
 export { router }

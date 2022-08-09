@@ -1,7 +1,8 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import { auth, requiresAuth } from 'express-openid-connect';
+// import { auth, requiresAuth } from 'express-openid-connect';
 import  mongoose  from "mongoose";
+import {Socket} from "socket.io";
 
 require('dotenv').config()
 
@@ -17,7 +18,7 @@ const config = {
 };
 
 // auth router attaches /login, /logout, and /callback routes to the baseURL
-app.use(auth(config));
+// app.use(auth(config));
 
 app.use(bodyParser.urlencoded({extended:false}))
 
@@ -40,9 +41,10 @@ app.use("/api/messages", router)
 
 // req.isAuthenticated is provided from the auth router
 app.get('/', (req, res) => {
-    console.log(req.oidc.user)
+    // console.log(req.oidc.user)
     // res.json({msg: req.oidc.isAuthenticated()})
-    res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+    // res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+    return res.send('hello')
 });
 
 const port = process.env.PORT || 3000
@@ -56,3 +58,27 @@ mongoose.connect(`${process.env.MONGO_URL}`).then(()=>{
 app.listen(port, () => {
     console.log(`listening on port ${port}`);
 })
+
+
+// listend on socketio
+
+// const io = socket(server,{
+//     cors:{
+//         origin:"http://localhost:3000",
+//         Credential: true,
+//     }
+// })
+
+// global.onlineUsers = new Map();
+
+// io.on("connection",(socket) =>{
+//     global.chatSocket = socket
+//     socket.on("add-user",(userId) => onlineUsers.set(userId, socket.id))
+
+//     socket.on("send-msg",(data)=>{
+//         const sendUserSocket = onlineUsers.get(data.to)
+//         if(sendUserSocket){
+//             socket.to(sendUserSocket).emit("msg-recieved", data.message)
+//         }
+//     })
+// })
