@@ -22,4 +22,5 @@ const messageSchema = new Schema<Messages>(
     { timestamps: true }
 );
 
-module.exports = model<Messages>('Messages', messageSchema);
+const messageModel = model<Messages>('Messages', messageSchema);
+export {messageModel}

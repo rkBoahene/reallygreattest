@@ -1,6 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import { auth, requiresAuth } from 'express-openid-connect';
+import  mongoose  from "mongoose";
 
 require('dotenv').config()
 
@@ -34,6 +35,9 @@ app.use((req, res, next) => {
     next()
 })
 
+import {router} from '../src/routes/messageRoutes'
+app.use("/api/messages", router)
+
 // req.isAuthenticated is provided from the auth router
 app.get('/', (req, res) => {
     console.log(req.oidc.user)
@@ -42,6 +46,12 @@ app.get('/', (req, res) => {
 });
 
 const port = process.env.PORT || 3000
+
+mongoose.connect(`${process.env.MONGO_URL}`).then(()=>{
+    console.log("database connection successful");
+}).catch((err)=>{
+    console.log(err.message);
+})
 
 app.listen(port, () => {
     console.log(`listening on port ${port}`);
