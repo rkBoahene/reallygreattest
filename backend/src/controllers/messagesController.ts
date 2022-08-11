@@ -1,10 +1,13 @@
 import { messageModel } from '../model/messageModel';
+import { myUsersModel } from '../model/myUsersModel';
+const axios = require('axios');
 
 async function addMessage(req: any, res: any, next: any) {
     try {
         const { from, to, message } = req.body;
+        // console.log(from, to, message)
         const data = await messageModel.create({
-            message: { text: message },
+            message,
             users: [from, to],
             sender: from
         });
@@ -25,10 +28,11 @@ async function getAllMessage(req: any, res: any, next: any) {
                 }
             })
             .sort({ updatedAt: 1 });
+            console.log(messages)
         const projectMessage = messages.map((msg: any) => {
             return {
                 fromSelf: msg.sender.toString() === from,
-                message: msg.message.text
+                message: msg.message
             };
         });
         res.json(projectMessage);
@@ -37,4 +41,14 @@ async function getAllMessage(req: any, res: any, next: any) {
     }
 }
 
-export { addMessage, getAllMessage };
+async function getAllUsers(req: any, res: any, next: any) {
+    try {
+        
+        const users = await myUsersModel.find();
+        return res.json({status: true, data: users});
+    } catch (error) {
+        next(error);
+    }
+}
+
+export { addMessage, getAllMessage, getAllUsers };

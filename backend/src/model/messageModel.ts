@@ -14,8 +14,7 @@ const messageSchema = new Schema<Messages>(
         },
         users: Array,
         sender: {
-            type: Schema.Types.ObjectId,
-            ref: 'User',
+            type: String,
             required: true
         }
     },
