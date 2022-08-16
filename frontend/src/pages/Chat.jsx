@@ -1,59 +1,33 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from "styled-components"
-import axios from "axios"
-import { useNavigate } from "react-router-dom";
-import { allUsersRoute, host } from '../utils/APIRoutes';
-import Contacts from '../components/Contacts';
+import Contacts from '../components/Contacts'
+import axios from 'axios'
+import { allUsersRoute } from '../utils/APIRoutes';
 
-import ChatContainer from '../components/ChatContainer';
 
-import { io } from "socket.io-client";
-
-function Chat() {
-  const socket = useRef()
-  const navigate = useNavigate()
-  const [contacts, setContacts] = useState([])
+export default function Chat() {
   const [currentUser, setCurrentUser] = useState(undefined)
+  const [contacts, setContacts] = useState([])
   const [currentChat, setCurrentChat] = useState(undefined)
-  const [isLoaded, setIsLoaded] = useState(false)
 
-  // get current user
   // useEffect(() => {
-  //   async function checkLogin() {
-
-  //     if (!localStorage.getItem('chat-app-user')) {
-  //       navigate('/login')
-  //     } else {
-  //       setCurrentUser(await JSON.parse(localStorage.getItem("chat-app-user")))
-  //       setIsLoaded(true)
-  //     }
-  //   }
-  //   checkLogin()
+  //   setCurrentUser(user)
   // }, [])
 
   useEffect(() => {
-    if (currentUser) {
-      socket.current = io(host);
-      socket.current.emit("add-user", currentUser._id)
-    }
-  }, [currentUser])
-  
 
-  // check if user has avatar
-  useEffect(() => {
+    async function getAllUsers() {
 
-    async function checkAvatar() {
+      
 
       if (currentUser) {
-        if (currentUser.isAvatarImageSet) {
-          const data = await axios.get(`${allUsersRoute}/${currentUser._id}`)
-          setContacts(data.data)
-        } else {
-          navigate('/setAvatar')
-        }
+
+        const data = await axios.get(`${allUsersRoute}`)
+        setContacts(data.data)
+
       }
     }
-    checkAvatar()
+    getAllUsers()
 
 
   }, [currentUser])
@@ -62,20 +36,16 @@ function Chat() {
     setCurrentChat(chat)
   }
 
-  return (<Container>
-    <div className="container">
-      <Contacts contacts={contacts} currentUser={currentUser} changeChat={handleChatChange}></Contacts>
-      {
-        isLoaded && currentChat == undefined ? (
+  return (
+    <Container>
 
-          <div>hello</div>
-        ) : (
-          <ChatContainer currentChat={currentChat} currentUser={currentUser} socket={socket}/>
-        )
-      }
-    </div>
-  </Container>)
+      <div className="container">
+        <Contacts currentUser={currentUser} changeChat={handleChatChange}></Contacts>
+      </div>
+    </Container>
+  )
 }
+
 
 const Container = styled.div`
 height: 100vh;
@@ -97,5 +67,3 @@ background-color: #131324;
   }
 }
 `;
-
-export default Chat

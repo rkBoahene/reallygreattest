@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { auth, requiresAuth } from 'express-openid-connect';
 import mongoose from 'mongoose';
+import cors from 'cors'
 import { Socket } from 'socket.io';
 
 require('dotenv').config();
@@ -9,7 +10,7 @@ require('dotenv').config();
 const app = express();
 
 const config = {
-    authRequired: false,
+    // authRequired: false,
     auth0Logout: true,
     secret: process.env.SECRET,
     baseURL: process.env.BASE_URL,
@@ -17,23 +18,30 @@ const config = {
     issuerBaseURL: process.env.ISSUER_BASE_URL
 };
 
+
+
 // auth router attaches /login, /logout, and /callback routes to the baseURL
 app.use(auth(config));
-
 app.use(bodyParser.urlencoded({ extended: false }));
+
+
+// setting up cors
+const allowedOrigins = ['http://localhost:3001'];
+
+app.use(cors({origin: allowedOrigins}));
 
 app.use(bodyParser.json());
 
-app.use((req, res, next) => {
-    res.header('Access-Controll-Allow-Origin', '*');
-    res.header('Access-Controll-Allow-Headers', 'Origin, x-Requested-With, Content-Type,Accept, Authorization');
+// app.use((req, res, next) => {
+//     res.header('Access-Controll-Allow-Origin', '*');
+//     res.header('Access-Controll-Allow-Headers', 'Origin, x-Requested-With, Content-Type,Accept, Authorization');
 
-    if (req.method == 'OPTIONS') {
-        res.header('Access-Controll-Allow-Methods', 'GET, POST');
-        return res.status(200).json({});
-    }
-    next();
-});
+//     if (req.method == 'OPTIONS') {
+//         res.header('Access-Controll-Allow-Methods', 'GET, POST');
+//         return res.status(200).json({});
+//     }
+//     next();
+// });
 
 import { router } from '../src/routes/messageRoutes';
 app.use('/api/messages', router);
@@ -73,7 +81,7 @@ app.listen(port, () => {
     console.log(`listening on port ${port}`);
 });
 
-// listend on socketio
+// listen on socketio
 
 // const io = socket(server,{
 //     cors:{

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import styled from "styled-components"
 
-export default function Contacts({ contacts, currentUser, changeChat }) {
+export default function Contacts({ currentUser, changeChat }) {
     const [currentUserName, setCurrentUserName] = useState(undefined)
     const [currentUserImage, setCurrentUserImage] = useState(undefined)
     const [currentSelected, setCurrentSeleceted] = useState(undefined)
     useEffect(() => {
         if (currentUser) {
-            setCurrentUserImage(currentUser.avatarImage)
-            setCurrentUserName(currentUser.username)
+            setCurrentUserImage(currentUser.picture)
+            setCurrentUserName(currentUser.name)
         }
     }, [currentUser])
 
@@ -16,6 +16,7 @@ export default function Contacts({ contacts, currentUser, changeChat }) {
         setCurrentSeleceted(index)
         changeChat(contact)
     }
+    console.log(currentUserImage);
 
     return (
         <>
@@ -23,10 +24,10 @@ export default function Contacts({ contacts, currentUser, changeChat }) {
                 currentUserImage && currentUserName && (
                     <Container>
                         <div className="brand">
-                            <img src="{}" alt="logo" />
-                            <h3>Chatty</h3>
+                            
+                            <h3>RealGreatTest</h3>
                         </div>
-                        <div className="contacts">
+                        {/* <div className="contacts">
                             {
                                 contacts.map((contact, index) => {
                                     return (
@@ -42,13 +43,13 @@ export default function Contacts({ contacts, currentUser, changeChat }) {
                                     )
                                 })
                             }
-                        </div>
+                        </div> */}
                         <div className="current-user">
                             <div className="avatar">
-                                <img src="{`data:image/svg+xml;base64,${currentUserImage}`}" alt="avatar" />
+                                <img src={currentUserImage} alt="avatar" />
                             </div>
                             <div className="username">
-                                <h2>{currentUserName}</h2>
+                                <h3>{currentUserName}</h3>
                             </div>
                         </div>
                     </Container>
@@ -103,7 +104,8 @@ background-color: #080420;
         transition: 0.5s ease-in-out;
         .avatar{
             img{
-                height: 3rem;
+                height: 2rem;
+                border-radius: 50%;
             }
         }
         .username{
